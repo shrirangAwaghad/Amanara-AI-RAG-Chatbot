@@ -1,7 +1,7 @@
 [project]
 name = "amanara-chatbot"
 version = "0.1.0"
-description = "Add your description here"
+description = "AI-powered RAG chatbot for Amanara Energy"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = []

@@ -1,0 +1,52 @@
+# ==========================================
+# Python
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+.venv/
+venv/
+
+# Environment Variables
+.env
+.env.*
+
+# Python Tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS Files
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+
+# Qdrant Storage
+qdrant_storage/
+
+# Local Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary Files
+tmp/
+temp/
