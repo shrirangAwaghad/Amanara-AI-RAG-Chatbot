@@ -12,6 +12,7 @@ venv/
 # Environment Variables
 .env
 .env.*
+!.env.example
 
 # Python Tooling
 .pytest_cache/
