@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+
+from amanara.api.router import api_router
 from amanara.config.settings import settings
 
 app = FastAPI(
@@ -6,10 +8,4 @@ app = FastAPI(
     debug=settings.debug,
 )
 
-@app.get("/health")
-def health():
-    return {
-        "status": "healthy",
-        "environment": settings.app_env,
-    }
-    
+app.include_router(api_router)
