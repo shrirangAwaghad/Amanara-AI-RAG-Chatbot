@@ -290,7 +290,11 @@ if question:
                 )
 
             except Exception:
-                st.error(
+                 import logging
+                 
+                 logging.exception("Chatbot request failed")
+                 
+                 st.error(
                     "The chatbot could not generate a response. "
                     "Please try again."
                 )
