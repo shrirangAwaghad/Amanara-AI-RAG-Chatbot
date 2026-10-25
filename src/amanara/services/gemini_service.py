@@ -16,7 +16,7 @@ class GeminiService:
                 print(f"Using model: {settings.llm_model}")
 
                 response = self.client.models.generate_content(
-                    model="gemini-flash-latest",
+                    model=settings.llm_model,
                     contents=prompt,
                 )
                 return response.text

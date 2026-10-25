@@ -51,3 +51,16 @@ qdrant_storage/
 # Temporary Files
 tmp/
 temp/
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Local evaluation output
+evaluation/retrieval_results.csv
+
+# Local diagnostic output
+tree_1.txt
+
+# Generated RAG evaluation artifacts
+evaluation/chunks.json
+evaluation/retrieval_results.csv

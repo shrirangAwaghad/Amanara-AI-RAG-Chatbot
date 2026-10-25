@@ -1,150 +1,307 @@
-from pathlib import Path
-
+﻿
 import streamlit as st
-
+from pathlib import Path
 from amanara.rag.chatbot import AmanaraRAG
-from amanara.rag.ingestion import IngestionPipeline
 
+# --------------------------------------------------
+# Page configuration
+# --------------------------------------------------
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+LOGO_PATH = PROJECT_ROOT / "assets" / "logo.png"
 
-def app():
+st.set_page_config(
+    page_title="Amanara AI Chatbot",
+    page_icon=str(LOGO_PATH) if LOGO_PATH.exists() else "â˜€ï¸",
+    layout="centered",
+)
 
-    st.set_page_config(
-        page_title="Amanara AI",
-        page_icon="assets/logo.png",
-        layout="wide",
-    )
+# --------------------------------------------------
+# Simple white theme with subtle green accents
+# --------------------------------------------------
+st.markdown(
+    """
+    <style>
+        /* Main page */
+        .stApp {
+            background-color: #FFFFFF;
+            color: #1F2937;
+        }
 
-    @st.cache_resource
-    def get_chatbot():
-        return AmanaraRAG()
+        [data-testid="stHeader"] {
+            background-color: #FFFFFF;
+        }
 
-    chatbot = get_chatbot()
+        .block-container {
+            max-width: 850px;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
 
+        /* Headings and general text */
+        h1, h2, h3, p, label,
+        [data-testid="stMarkdownContainer"],
+        [data-testid="stCaptionContainer"] {
+            color: #1F2937;
+        }
 
-    if "messages" not in st.session_state:
-        st.session_state.messages = [
-            {
-                "role": "assistant",
-                "content": "Hello! I'm Amanara AI. How can I help you today?",
-            }
-        ]
+        .amanara-subtitle {
+            color: #4B5563 !important;
+            font-size: 1rem;
+            margin-top: -0.5rem;
+            margin-bottom: 1.5rem;
+        }
 
-    # ---------------- Sidebar ---------------- #
+        /* Chat messages */
+        [data-testid="stChatMessage"] {
+            background-color: #FFFFFF;
+            color: #1F2937;
+            border: 1px solid #D1D5DB;
+            border-radius: 12px;
+            padding: 0.75rem;
+        }
 
-    # with st.sidebar:
+        [data-testid="stChatMessage"] p,
+        [data-testid="stChatMessage"] li,
+        [data-testid="stChatMessage"] strong,
+        [data-testid="stChatMessage"] span {
+            color: #1F2937 !important;
+        }
 
-    #     st.header("Knowledge Base")
+        /* Chat input */
+        [data-testid="stChatInput"] textarea {
+            color: #111827 !important;
+            background-color: #FFFFFF !important;
+            -webkit-text-fill-color: #111827 !important;
+            caret-color: #111827 !important;
+        }
 
-    #     uploaded_file = st.file_uploader(
-    #         "Upload PDF or TXT",
-    #         type=["pdf", "txt"],
-    #     )
+        [data-testid="stChatInput"] textarea::placeholder {
+            color: #6B7280 !important;
+            -webkit-text-fill-color: #6B7280 !important;
+            opacity: 1;
+        }
 
-    #     if uploaded_file is not None:
+        [data-testid="stChatInput"] {
+            background-color: #FFFFFF;
+            border-color: #D1D5DB;
+        }
 
-    #         kb_path = Path("knowledge_base")
-    #         kb_path.mkdir(exist_ok=True)
+        /* Suggested question buttons */
+        div.stButton > button {
+            color: #1F2937 !important;
+            background-color: #FFFFFF !important;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+        }
 
-    #         file_path = kb_path / uploaded_file.name
+        div.stButton > button:hover {
+            color: #166534 !important;
+            border-color: #39804D;
+        }
 
-    #         with open(file_path, "wb") as f:
-    #             f.write(uploaded_file.getbuffer())
+        /* Source expanders */
+        [data-testid="stExpander"] {
+            background-color: #FFFFFF;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+        }
 
-    #         st.success(f"{uploaded_file.name} uploaded successfully!")
+        [data-testid="stExpander"] summary,
+        [data-testid="stExpander"] summary p {
+            color: #1F2937 !important;
+        }
 
-    #     if st.button("🔄 Rebuild Knowledge Base"):
+        /* Secondary text */
+        [data-testid="stCaptionContainer"] p {
+            color: #4B5563 !important;
+        }
 
-    #         with st.spinner("Rebuilding knowledge base..."):
+        hr {
+            border-color: #E5E7EB;
+        }
 
-    #             pipeline = IngestionPipeline()
-    #             pipeline.run()
+        /* Make the bottom chat input area white */
+        [data-testid="stBottom"] {
+            background-color: #FFFFFF !important;
+        }
 
-    #         st.success("Knowledge base rebuilt successfully!")
+        [data-testid="stBottom"] > div {
+            background-color: #FFFFFF !important;
+        }
 
-    with st.sidebar:
-        st.header("Knowledge Base")
+        [data-testid="stChatInput"] {
+            background-color: #FFFFFF !important;
+            border: 1px solid #CBD5E1 !important;
+            border-radius: 10px !important;
+            box-shadow: none !important;
+        }
 
-        st.success("Knowledge Base Loaded")
+        [data-testid="stChatInput"] > div {
+            background-color: #FFFFFF !important;
+        }
 
-        st.info(
-            "This chatbot uses a curated Amanara knowledge base."
-        )
+        [data-testid="stChatInput"] textarea {
+            color: #1F2937 !important;
+            background-color: #FFFFFF !important;
+            -webkit-text-fill-color: #1F2937 !important;
+            caret-color: #1F2937 !important;
+        }
 
-    # ---------------- Main Page ---------------- #
+        [data-testid="stChatInput"] textarea::placeholder {
+            color: #64748B !important;
+            -webkit-text-fill-color: #64748B !important;
+            opacity: 1 !important;
+        }
 
-    col1, col2 = st.columns([1, 6])
+        [data-testid="stChatInput"] button {
+            color: #FFFFFF !important;
+            background-color: #39804D !important;
+            border-radius: 8px !important;
+        }
 
-    with col1:
-        st.image("assets/logo.png", width=80)
+        [data-testid="stChatInput"] button:hover {
+            background-color: #28683A !important;
+        }
 
-    with col2:
-        st.title("Amanara AI")
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
-    st.caption("Ask questions about Amanara Solar.")
+# --------------------------------------------------
+# Header and existing logo
+# --------------------------------------------------
+if LOGO_PATH.exists():
+    st.image(str(LOGO_PATH), width=150)
 
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+st.title("Amanara AI Chatbot")
 
-    question = st.chat_input("Ask your question...")
+st.markdown(
 
-    if question:
+    """
+    <p class="amanara-subtitle">
+        Ask questions about Amanara's open-access solar power services.
+    </p>
 
+    """,
+    unsafe_allow_html=True,
+)
 
-        st.session_state.messages.append(
-            {
-                "role": "user",
-                "content": question,
-            }
-        )
+st.divider()
 
-        with st.chat_message("user"):
-            st.markdown(question)
+# --------------------------------------------------
+# Initialize chatbot and conversation history
+# --------------------------------------------------
+if "chatbot" not in st.session_state:
+    st.session_state.chatbot = AmanaraRAG()
 
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-        with st.spinner("Searching knowledge base..."):
-            
+# --------------------------------------------------
+# Display previous messages and their sources
+# --------------------------------------------------
+def display_sources(sources):
+    if not sources:
+        return
 
-            try:
-                result = chatbot.ask(
-                    question,
-                st.session_state.messages,
+    with st.expander("Sources used"):
+        for index, source in enumerate(sources, start=1):
+            payload = source.payload or {}
+
+            st.markdown(
+                f"**Source {index}:** "
+                f"{payload.get('source', 'Unknown')}"
+            )
+            st.caption(
+                f"Chunk ID: {payload.get('chunk_id', 'Unknown')}"
+            )
+            st.write(
+                payload.get("text", "No source text available.")
             )
 
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+        if message["role"] == "assistant":
+            display_sources(message.get("sources", []))
+
+# --------------------------------------------------
+# Suggested questions
+# --------------------------------------------------
+if not st.session_state.messages:
+    st.markdown("**Try asking:**")
+
+    suggestions = [
+        "How does open-access solar work?",
+        "Who is eligible for open access?",
+        "What are the benefits of solar power?",
+    ]
+
+    columns = st.columns(len(suggestions))
+
+    for index, suggestion in enumerate(suggestions):
+        if columns[index].button(
+            suggestion,
+            key=f"suggestion_{index}",
+            use_container_width=True,
+        ):
+            st.session_state.pending_question = suggestion
+            st.rerun()
+
+# --------------------------------------------------
+# Process a new question
+# --------------------------------------------------
+question = st.chat_input("Ask a question about Amanara...")
+
+# Support both the chat input and suggested questions.
+if not question:
+    question = st.session_state.pop("pending_question", None)
+
+if question:
+    st.session_state.messages.append(
+        {"role": "user", "content": question}
+    )
+
+    with st.chat_message("user"):
+        st.markdown(question)
+
+    with st.chat_message("assistant"):
+        with st.spinner("Finding information and generating an answer..."):
+            try:
+                result = st.session_state.chatbot.ask(
+                    question=question,
+                    history=st.session_state.messages[:-1],
+                )
+
+                answer = result["answer"]
+                sources = result.get("sources", [])
+
+                st.markdown(answer)
+                display_sources(sources)
+
+                st.session_state.messages.append(
+                    {
+                        "role": "assistant",
+                        "content": answer,
+                        "sources": sources,
+                    }
+                )
+
             except Exception:
-                st.error("An unexpected error occurred while generating the response.")
-                raise
-                st.stop()
+                st.error(
+                    "The chatbot could not generate a response. "
+                    "Please try again."
+                )
 
+# --------------------------------------------------
+# Footer
+# --------------------------------------------------
+st.divider()
 
-            answer = result["answer"]
-            sources = result["sources"]
-
-
-        with st.chat_message("assistant"):
-            st.markdown(answer)
-
-            if sources:
-                st.divider()
-                st.markdown("**📄 Sources**")
-
-                displayed_sources = set()
-
-                for chunk in sources:
-                    payload = chunk.payload or {}
-
-                    source_name = Path(
-                        payload.get("source", "Unknown")
-                    ).name
-
-                    if source_name not in displayed_sources:
-                        st.markdown(f"- {source_name}")
-                        displayed_sources.add(source_name)
-
-        st.session_state.messages.append(
-            {
-                "role": "assistant",
-                "content": answer,
-            }
-        )
-
+st.caption(
+    "Amanara AI Chatbot | Student project prototype. "
+    "Responses are based on the available knowledge base "
+    "and should be verified before making business decisions."
+)

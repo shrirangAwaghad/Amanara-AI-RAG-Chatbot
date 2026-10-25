@@ -56,8 +56,7 @@ class IngestionPipeline:
         # (Deletes old vectors)
         # -----------------------------
         print("Recreating Qdrant collection...")
-        self.qdrant_service.create_collection()
-
+        self.qdrant_service.recreate_collection()
         # -----------------------------
         # Upload Embeddings
         # -----------------------------

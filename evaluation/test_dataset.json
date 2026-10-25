@@ -1,0 +1,34 @@
+
+[
+  {
+    "question": "How does Amanara's open-access solar model work?",
+    "relevant_point_ids": [
+      "041f62e1-5578-5d4e-945e-9cb352d11e79",
+      "8be76c36-24b4-5fa0-95e0-33e94c055109",
+      "0ed710f7-adcf-536f-ad27-543aa90c0043"
+    ],
+    "answerable": true
+  },
+  {
+    "question": "Which businesses can purchase power through open access?",
+    "relevant_point_ids": [
+      "8be76c36-24b4-5fa0-95e0-33e94c055109",
+      "0ed710f7-adcf-536f-ad27-543aa90c0043"
+    ],
+    "answerable": true
+  },
+  {
+    "question": "What are the benefits of open-access solar?",
+    "relevant_point_ids": [
+      "1f7c4604-c5ca-523e-b5d0-fbe189a2f7b9",
+      "1419cba6-bd74-550b-9f67-9cb7f9e67397",
+      "830e94d8-edb7-5eed-ab9a-463f9558de86"
+    ],
+    "answerable": true
+  },
+  {
+    "question": "What exact electricity tariff will Amanara charge my factory next month?",
+    "relevant_point_ids": [],
+    "answerable": false
+  }
+]
